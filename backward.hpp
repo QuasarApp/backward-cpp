@@ -68,6 +68,8 @@
 #endif
 #endif
 
+
+
 #define NOINLINE __attribute__((noinline))
 
 #include <algorithm>
@@ -85,6 +87,7 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <wchar.h>
 
 #if defined(BACKWARD_SYSTEM_LINUX)
 
@@ -3301,9 +3304,9 @@ public:
     ret.base_address = mi.lpBaseOfDll;
     ret.load_size = mi.SizeOfImage;
 
-    GetModuleFileNameEx(process, module, temp, sizeof(temp));
+    GetModuleFileNameExA(process, module, temp, sizeof(temp));
     ret.image_name = temp;
-    GetModuleBaseName(process, module, temp, sizeof(temp));
+    GetModuleBaseNameA(process, module, temp, sizeof(temp));
     ret.module_name = temp;
     std::vector<char> img(ret.image_name.begin(), ret.image_name.end());
     std::vector<char> mod(ret.module_name.begin(), ret.module_name.end());
@@ -3368,7 +3371,7 @@ public:
                     NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                     (LPTSTR)&lpMsgBuf, 0, NULL);
 
-      printf(lpMsgBuf);
+      std::cout<< lpMsgBuf <<std::endl;
 
       // abort();
     }
@@ -4015,7 +4018,7 @@ public:
     SetUnhandledExceptionFilter(crash_handler);
 
     signal(SIGABRT, signal_handler);
-    _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+//_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
 
     std::set_terminate(&terminator);
     std::set_unexpected(&terminator);
